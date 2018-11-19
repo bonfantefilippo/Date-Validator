@@ -6,6 +6,11 @@
 int main(int argc, char *argv[]) {
 	int day, month, year;
 	int prevDay, prevMonth, prevYear;
+	int tempDay, tempMonth, tempYear;
+	
+	tempDay=12;
+	tempMonth=4;
+	tempYear=2011;
 	
 	prevDay = day;
 	prevMonth = month;
@@ -30,17 +35,20 @@ int main(int argc, char *argv[]) {
 	prevYear = year;
 	
 	
-	if(checkDate(&day, &month, &year)==0) {
-		printf("\nLa data %d/%d/%d non e' una data valida.", day, month, year);
+	if(checkDate(&day, &month, &year)==1) {
+		printf("\nLa data %d/%d/%d e' una data valida.", day, month, year);
+		prevDate(&prevDay, &prevMonth, &prevYear);
+		printf("\nData precedente a quella inserita: %d/%d/%d", prevDay, prevMonth, prevYear);
+		printf("\n____________________________________");
+		gapDate(&day, &month, &year, &tempDay, &tempMonth, &tempYear);
+		
+		firstYearRecent(&year, &tempYear);
+		firstMonthRecent(&month, &tempMonth);
 		
 	} else {
-		printf("\nLa data %d/%d/%d e' una data valida.", day, month, year);
+		printf("\nLa data %d/%d/%d NON e' una data valida.", day, month, year);
 	}
 	
-	prevDate(&prevDay, &prevMonth, &prevYear);
-	
-	printf("\nData precedente a quella inserita: %d/%d/%d", prevDay, prevMonth, prevYear);
-
 	return 0;
 }
 
@@ -62,7 +70,7 @@ int checkDate(int *day, int *month, int *year) {
 		}
 		
 		// Febbraio
-		else if (((*day>0 && *day<=28) && checkYear(year)==0) || ((*day>0 && *day<=29) && checkYear(year)==1)) {
+		else if (*month==2 &&(((*day>0 && *day<=28) && checkYear(year)==0) || ((*day>0 && *day<=29) && checkYear(year)==1))) {
 		     if(*month==2 && (*day>0 && *day<=28) && checkYear(year)==0){
 				/*printf("Febbraio (non bisestile) \n");
 				printf("Giorno: %d, Mese: %d, Anno: %d", *day, *month, *year);*/
@@ -148,9 +156,7 @@ int checkYear(int *year) {
 		2.1 verifico se l'anno è bisestile, se bisestile giorno=29 mese=2 anno=stesso anno
 		2.2 se non è bisestile allora giorno = 28 mese = 2 //FUNZIONA
 	
-	3. Considerare altre opzioni
-		
-	
+	3. Considerare le altre condizioni //FUNZIONA
 */
 void prevDate(int *day, int *month, int *year){
 	if(checkDate(day, month, year)==1){
@@ -180,9 +186,9 @@ void prevDate(int *day, int *month, int *year){
 			*day= *day -1;
 		}
 		
-	} else {
+	} /*else {
     	printf("\nLa data %d/%d/%d non e' una data valida.", *day, *month, *year);
-	}
+	}*/
 	
 }
 
@@ -191,8 +197,71 @@ void prevDate(int *day, int *month, int *year){
 	FUNZIONE CHE CALCOLA DISTANZA TRA DUE DATE
 	1. La prima è quella più recente
 	2. Decremento la data finche' la non raggiungo la data precedente
+	
+	verifico se primo anno più recente del secondo;
+	verifico se primo mese più recente del secondo;
+	verifico se primo giorno più recente del secondo;
+	verifico date uguali; --> FATTO
+	
 */
-void gapDate(int* day, int *month, int* year){
+void gapDate(int *dayA, int *monthA, int *yearA, int *dayB, int *monthB, int *yearB){
+	if(*yearA>*yearB){
+		printf("\nLa data piu' recente tra %d/%d/%d e %d/%d/%d e' %d/%d/%d", *dayA, *monthA, *yearA, *dayB, *monthB, *yearB, *dayA, *monthA, *yearA);
+	}else{
+			printf("\nLa data piu' recente tra %d/%d/%d e %d/%d/%d e' %d/%d/%d", *dayA, *monthA, *yearA, *dayB, *monthB, *yearB, *dayB, *monthB, *yearB);
+	}
+	
+	//date uguali
+	if(*dayA==*dayB && *monthA==*monthB && *yearA==*yearB){
+		printf("\nLe date %d/%d/%d e %d/%d/%d sono uguali.", *dayA, *monthA, *yearA, *dayB, *monthB, *yearB, *dayB, *monthB, *yearB);
+	}
+	
+}
+
+/*
+	0 PRIMO anno più recente;
+	1 SECONDO anno più recente;
+	2 uguali
+	Verifico:
+	- 
+*/
+int firstYearRecent(int *yearA, int *yearB){
+	if(*yearA == *yearB){
+		//UGUALI
+		printf("\nAnno %d uguale a %d", *yearA, *yearB);
+		return 2;
+	}
+
+	if(*yearA > *yearB){
+		printf("\nAnno %d piu' recente di %d", *yearA, *yearB);
+		return 0;
+	} else {
+		printf("\nAnno %d piu' recente di %d", *yearB, *yearA);
+		return 1;
+	}
+}
+
+/*
+	0 PRIMO mese più recente;
+	1 SECONDO mese più recente;
+	2 uguali
+
+*/
+int firstMonthRecent(int *monthA, int *monthB){
+	if(*monthA == *monthB) {
+		printf("\nMese %d uguale a %d", *monthA, *monthB);
+		return 2;
+	}
+	
+	if(*monthA > *monthB){
+		printf("\nMese %d piu' recente di %d", *monthA, *monthB);
+		return 0;
+	} else {
+		printf("\nMese %d piu' recente di %d", *monthB, *monthA);
+		return 1;
+	} 
+	
+
 	
 }
 
@@ -200,9 +269,10 @@ void gapDate(int* day, int *month, int* year){
 
 
 
+
 /*
 	gennaio, di 31 giorni
-	febbraio, di 28 giorni (29 se l'anno ï¿½ bisestile)
+	febbraio, di 28 giorni (29 se l'anno e' bisestile)
 	marzo, di 31 giorni
 	aprile, di 30 giorni
 	maggio, di 31 giorni
